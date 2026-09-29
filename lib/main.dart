@@ -36,7 +36,7 @@ class FakeStoreApp extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {
           return MaterialApp(
-            title: 'FakeStore E-Commerce',
+            title: 'NOVA Store',
             theme: AppTheme.lightTheme,
             debugShowCheckedModeBanner: false,
             home: authProvider.isAuthenticated

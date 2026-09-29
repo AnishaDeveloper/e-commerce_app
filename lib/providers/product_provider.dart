@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
+import '../data/fallback_products.dart';
 import '../models/product.dart';
 import '../services/product_service.dart';
 
 class ProductProvider extends ChangeNotifier {
   final ProductService _productService = ProductService();
 
-  List<Product> _products = [];
-  List<String> _categories = [];
+  List<Product> _products = FallbackData.products;
+  List<String> _categories = FallbackData.categories;
   String _selectedCategory = 'all';
   String _searchQuery = '';
   bool _isLoading = false;
@@ -40,12 +41,22 @@ class ProductProvider extends ChangeNotifier {
         _productService.getProducts(),
         _productService.getCategories(),
       ]);
-      _products = futures[0] as List<Product>;
-      _categories = futures[1] as List<String>;
+      final fetchedProducts = futures[0] as List<Product>;
+      final fetchedCategories = futures[1] as List<String>;
+      if (fetchedProducts.isNotEmpty) {
+        _products = fetchedProducts;
+      }
+      if (fetchedCategories.isNotEmpty) {
+        _categories = fetchedCategories;
+      }
       _isLoading = false;
       notifyListeners();
     } catch (e) {
       _isLoading = false;
+      if (_products.isEmpty) {
+        _products = FallbackData.products;
+        _categories = FallbackData.categories;
+      }
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
     }

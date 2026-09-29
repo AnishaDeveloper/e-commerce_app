@@ -45,13 +45,19 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    String imgUrl = json['image'] as String? ?? '';
+    if (imgUrl.contains('fakestoreapi.com/img/')) {
+      imgUrl = imgUrl
+          .replaceAll('https://fakestoreapi.com/img/', 'https://m.media-amazon.com/images/I/')
+          .replaceAll('http://fakestoreapi.com/img/', 'https://m.media-amazon.com/images/I/');
+    }
     return Product(
       id: (json['id'] as num?)?.toInt() ?? 0,
       title: json['title'] as String? ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       description: json['description'] as String? ?? '',
       category: json['category'] as String? ?? 'general',
-      image: json['image'] as String? ?? '',
+      image: imgUrl,
       rating: Rating.fromJson(json['rating'] as Map<String, dynamic>?),
     );
   }

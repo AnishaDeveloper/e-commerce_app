@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFF6366F1); // Indigo
-  static const Color primaryDark = Color(0xFF4F46E5);
-  static const Color secondary = Color(0xFFEC4899); // Pink
-  static const Color background = Color(0xFFF8FAFC);
+  // Amazon & Flipkart inspired primary tones
+  static const Color headerDark = Color(0xFF131921); // Amazon Dark Slate
+  static const Color headerNavy = Color(0xFF232F3E); // Amazon Secondary Navy
+  static const Color flipkartBlue = Color(0xFF2874F0); // Flipkart Brand Blue
+  static const Color locationBar = Color(0xFF37475A); // Location Subheader
+
+  // Action Buttons & Deals
+  static const Color amazonYellow = Color(0xFFFFD814); // "Add to Cart" button
+  static const Color amazonOrange = Color(0xFFFFA41C); // "Buy Now" button
+  static const Color dealRed = Color(0xFFCC0C39); // Amazon "Deal" red badge
+  static const Color discountGreen = Color(0xFF388E3C); // Flipkart green savings
+
+  // Aliases for compatibility
+  static const Color primary = headerNavy;
+  static const Color secondary = amazonOrange;
+  static const Color error = dealRed;
+  static const Color border = Color(0xFFD5D9D9);
+  static const Color cardBorder = Color(0xFFD5D9D9);
+
+  // Neutrals & Surfaces
+  static const Color background = Color(0xFFEAEDED); // Amazon soft light grey
   static const Color surface = Colors.white;
-  static const Color cardColor = Colors.white;
-  static const Color textPrimary = Color(0xFF0F172A);
-  static const Color textSecondary = Color(0xFF64748B);
-  static const Color textMuted = Color(0xFF94A3B8);
-  static const Color border = Color(0xFFE2E8F0);
-  static const Color ratingStar = Color(0xFFF59E0B);
-  static const Color success = Color(0xFF10B981);
-  static const Color error = Color(0xFFEF4444);
+  static const Color textPrimary = Color(0xFF0F1111);
+  static const Color textSecondary = Color(0xFF565959);
+  static const Color textMuted = Color(0xFF888888);
+  static const Color ratingStar = Color(0xFFDE7921); // Amazon Orange Rating Star
+  static const Color linkBlue = Color(0xFF007185); // Amazon hyperlink cyan/blue
 }
 
 class AppTheme {
@@ -22,70 +36,30 @@ class AppTheme {
       useMaterial3: true,
       scaffoldBackgroundColor: AppColors.background,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primary,
-        primary: AppColors.primary,
-        secondary: AppColors.secondary,
+        seedColor: AppColors.headerNavy,
+        primary: AppColors.headerNavy,
+        secondary: AppColors.amazonOrange,
         surface: AppColors.surface,
         error: AppColors.error,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.headerNavy,
         elevation: 0,
-        centerTitle: false,
         surfaceTintColor: Colors.transparent,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: Colors.white),
         titleTextStyle: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 20,
+          color: Colors.white,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
-          letterSpacing: -0.5,
         ),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.cardColor,
-        elevation: 0,
+        color: Colors.white,
+        elevation: 1,
+        shadowColor: Colors.black.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.border, width: 1),
+          borderRadius: BorderRadius.circular(8),
         ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          minimumSize: const Size.fromHeight(50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.border),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.error),
-        ),
-        labelStyle: const TextStyle(color: AppColors.textSecondary),
-        hintStyle: const TextStyle(color: AppColors.textMuted),
       ),
     );
   }

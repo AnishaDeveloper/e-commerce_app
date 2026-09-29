@@ -24,7 +24,8 @@ class ProductDetailScreen extends StatelessWidget {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
+              backgroundColor: AppColors.dealRed,
+              foregroundColor: Colors.white,
               minimumSize: const Size(80, 40),
             ),
             onPressed: () async {
@@ -41,7 +42,7 @@ class ProductDetailScreen extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Failed: ${productProvider.errorMessage}'),
-                      backgroundColor: AppColors.error,
+                      backgroundColor: AppColors.dealRed,
                     ),
                   );
                 }
@@ -62,28 +63,37 @@ class ProductDetailScreen extends StatelessWidget {
 
     if (product == null) {
       return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(title: const Text('Product Details')),
         body: const Center(child: Text('Product not found')),
       );
     }
 
+    final strikePrice = product.price * 1.35;
+    final discountPercent = 25 + (product.id % 20);
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Product Details'),
+        title: Text(
+          product.category.toUpperCase(),
+          style: const TextStyle(fontSize: 14, letterSpacing: 0.5),
+        ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.share_outlined),
+            onPressed: () {},
+          ),
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             tooltip: 'Edit Product',
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AddEditProductScreen(product: product),
-                ),
+                MaterialPageRoute(builder: (_) => AddEditProductScreen(product: product)),
               );
             },
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.error),
+            icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
             tooltip: 'Delete Product',
             onPressed: () => _confirmDelete(context, product),
           ),
@@ -91,14 +101,57 @@ class ProductDetailScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hero image container
+            // Brand & Title
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Brand: ${product.category.toUpperCase()}',
+                    style: const TextStyle(color: AppColors.linkBlue, fontSize: 13, fontWeight: FontWeight.w600),
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, color: AppColors.ratingStar, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${product.rating.rate}',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '(${product.rating.count})',
+                        style: const TextStyle(color: AppColors.linkBlue, fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                product.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary,
+                  height: 1.3,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Hero Image
             Container(
-              height: 320,
+              height: 300,
               width: double.infinity,
               color: Colors.white,
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               child: Hero(
                 tag: 'product_image_${product.id}',
                 child: Image.network(
@@ -107,128 +160,219 @@ class ProductDetailScreen extends StatelessWidget {
                   errorBuilder: (ctx, err, stack) => const Icon(
                     Icons.broken_image_outlined,
                     size: 80,
-                    color: AppColors.textMuted,
+                    color: Colors.grey,
                   ),
                 ),
               ),
             ),
-            const Divider(height: 1, thickness: 1, color: AppColors.border),
+            const Divider(height: 1, thickness: 8, color: AppColors.background),
 
+            // Price & Deal Section (Amazon style)
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.dealRed,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'Limited time deal',
+                      style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          product.category.toUpperCase(),
-                          style: const TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.8,
-                          ),
+                      Text(
+                        '-$discountPercent%',
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w300,
+                          color: AppColors.dealRed,
                         ),
                       ),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: AppColors.ratingStar, size: 20),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${product.rating.rate}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '(${product.rating.count} reviews)',
-                            style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
-                          ),
-                        ],
+                      const SizedBox(width: 8),
+                      Text(
+                        '\$${product.price.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
 
-                  Text(
-                    product.title,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                      height: 1.25,
-                    ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Typical price: ',
+                        style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                      ),
+                      Text(
+                        '\$${strikePrice.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 12),
 
-                  Text(
-                    '\$${product.price.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.primary,
+                  // Delivery info
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.flipkartBlue,
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              child: const Text(
+                                'Assured',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'FREE delivery by Tomorrow',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'In Stock • Sold by FakeStore Retail & Fulfilled by Marketplace',
+                          style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
 
+                  // Product Description
                   const Text(
-                    'Description',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
+                    'About this item',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     product.description,
                     style: const TextStyle(
                       fontSize: 14,
-                      color: AppColors.textSecondary,
-                      height: 1.6,
+                      color: AppColors.textPrimary,
+                      height: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 32),
                 ],
               ),
             ),
           ],
         ),
       ),
+
+      // Amazon Sticky Dual Action Bottom Bar
       bottomNavigationBar: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                offset: const Offset(0, -4),
-                blurRadius: 10,
+                color: Colors.black.withValues(alpha: 0.08),
+                offset: const Offset(0, -2),
+                blurRadius: 6,
               ),
             ],
           ),
-          child: ElevatedButton.icon(
-            onPressed: () {
-              cartProvider.addToCart(product);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Added "${product.title}" to cart!'),
-                  duration: const Duration(seconds: 1),
-                  behavior: SnackBarBehavior.floating,
+          child: Row(
+            children: [
+              // Add to Cart (Yellow)
+              Expanded(
+                child: SizedBox(
+                  height: 46,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.amazonYellow,
+                      foregroundColor: Colors.black,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: const BorderSide(color: Color(0xFFFCD200)),
+                      ),
+                    ),
+                    onPressed: () {
+                      cartProvider.addToCart(product);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Added "${product.title}" to cart!'),
+                          duration: const Duration(seconds: 1),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Add to Cart',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
-              );
-            },
-            icon: const Icon(Icons.shopping_bag_outlined),
-            label: const Text('Add to Cart'),
+              ),
+              const SizedBox(width: 12),
+
+              // Buy Now (Orange)
+              Expanded(
+                child: SizedBox(
+                  height: 46,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.amazonOrange,
+                      foregroundColor: Colors.black,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: const BorderSide(color: Color(0xFFE88B00)),
+                      ),
+                    ),
+                    onPressed: () {
+                      cartProvider.addToCart(product);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Order placed successfully via FakeStore API!'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Buy Now',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

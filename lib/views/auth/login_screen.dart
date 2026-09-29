@@ -42,14 +42,12 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(
           content: Text(authProvider.errorMessage!),
           backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          duration: const Duration(seconds: 4),
         ),
       );
     }
-  }
-
-  void _fillPreset(String user, String pass) {
-    _usernameController.text = user;
-    _passwordController.text = pass;
   }
 
   @override
@@ -57,158 +55,262 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Container(
-                    width: 72,
-                    height: 72,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.12),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.shopping_bag_outlined,
-                      size: 40,
-                      color: AppColors.primary,
+                  // App Brand Logo & Title
+                  Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(18),
+                            child: Image.asset(
+                              'assets/icons/app_logo.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'NOVA STORE',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 2.0,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Welcome Back',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Sign in to explore trending products',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 28),
 
-                  // Demo Credentials Banner
+                  // Amazon Style Card Container
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.amber.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.amber.shade200),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFFD5D9D9), width: 1),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.info_outline, size: 18, color: Colors.amber.shade800),
-                            const SizedBox(width: 8),
-                            Text(
-                              'FakeStoreAPI Test Accounts',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.amber.shade900,
-                                fontSize: 13,
+                        const Text(
+                          'Sign in',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+
+                        // Username Label & Input
+                        const Text(
+                          'Username',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        TextFormField(
+                          controller: _usernameController,
+                          decoration: InputDecoration(
+                            hintText: 'Enter your username',
+                            hintStyle: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: const BorderSide(color: Color(0xFF888C8C)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: const BorderSide(color: Color(0xFF888C8C)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: const BorderSide(color: AppColors.amazonOrange, width: 2),
+                            ),
+                          ),
+                          validator: (val) =>
+                              val == null || val.trim().isEmpty ? 'Please enter your username' : null,
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Password Label & Input
+                        const Text(
+                          'Password',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          decoration: InputDecoration(
+                            hintText: 'At least 6 characters',
+                            hintStyle: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                color: AppColors.textMuted,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: const BorderSide(color: Color(0xFF888C8C)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: const BorderSide(color: Color(0xFF888C8C)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: const BorderSide(color: AppColors.amazonOrange, width: 2),
+                            ),
+                          ),
+                          validator: (val) =>
+                              val == null || val.trim().isEmpty ? 'Please enter your password' : null,
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Amazon Yellow Sign In Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 44,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.amazonYellow,
+                              foregroundColor: Colors.black,
+                              elevation: 1,
+                              shadowColor: Colors.black26,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: const BorderSide(color: Color(0xFFFCD200)),
                               ),
                             ),
-                          ],
+                            onPressed: authProvider.isLoading ? null : _submit,
+                            child: authProvider.isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.black87,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Sign in',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                          ),
                         ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          children: [
-                            ActionChip(
-                              label: const Text('mor_2314 (Default)', style: TextStyle(fontSize: 12)),
-                              onPressed: () => _fillPreset('mor_2314', '83r5^_'),
-                            ),
-                            ActionChip(
-                              label: const Text('johnd', style: TextStyle(fontSize: 12)),
-                              onPressed: () => _fillPreset('johnd', 'm38rmF\$'),
-                            ),
-                            ActionChip(
-                              label: const Text('kevinryan', style: TextStyle(fontSize: 12)),
-                              onPressed: () => _fillPreset('kevinryan', 'kev=&2`_'),
-                            ),
-                          ],
+                        const SizedBox(height: 16),
+
+                        // Amazon Terms Text
+                        const Text(
+                          'By continuing, you agree to NOVA Store\'s Conditions of Use and Privacy Notice.',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: AppColors.textSecondary,
+                            height: 1.35,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 24),
 
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      prefixIcon: Icon(Icons.person_outline),
-                    ),
-                    validator: (val) => val == null || val.trim().isEmpty ? 'Please enter username' : null,
-                  ),
-                  const SizedBox(height: 16),
-
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                          color: AppColors.textMuted,
+                  // Amazon "New to Amazon?" Section Divider
+                  Row(
+                    children: [
+                      const Expanded(child: Divider(color: Color(0xFFD5D9D9))),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          'New to NOVA Store?',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
                       ),
-                    ),
-                    validator: (val) => val == null || val.trim().isEmpty ? 'Please enter password' : null,
+                      const Expanded(child: Divider(color: Color(0xFFD5D9D9))),
+                    ],
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 14),
 
-                  ElevatedButton(
-                    onPressed: authProvider.isLoading ? null : _submit,
-                    child: authProvider.isLoading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2.5,
-                            ),
-                          )
-                        : const Text('Sign In'),
-                  ),
-                  const SizedBox(height: 16),
-
-                  TextButton(
-                    onPressed: () {
-                      // Guest browsing bypass
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
-                      );
-                    },
-                    child: const Text(
-                      'Continue as Guest',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w600,
+                  // Amazon Style Secondary Action: Continue as Guest
+                  SizedBox(
+                    width: double.infinity,
+                    height: 42,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF7FAFA),
+                        foregroundColor: AppColors.textPrimary,
+                        elevation: 0.5,
+                        side: const BorderSide(color: Color(0xFFD5D9D9)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+                        );
+                      },
+                      child: const Text(
+                        'Continue as Guest',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
                   ),

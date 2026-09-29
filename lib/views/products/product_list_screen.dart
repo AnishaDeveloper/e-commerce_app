@@ -16,17 +16,7 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final productProvider = Provider.of<ProductProvider>(context, listen: false);
-      if (productProvider.rawProducts.isEmpty) {
-        productProvider.fetchProducts();
-      }
-    });
-  }
+  String _sortBy = 'featured';
 
   @override
   void dispose() {
@@ -39,21 +29,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
     final productProvider = Provider.of<ProductProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
+    var products = productProvider.products;
+
+    // Apply sorting
+    if (_sortBy == 'price_low') {
+      products.sort((a, b) => a.price.compareTo(b.price));
+    } else if (_sortBy == 'price_high') {
+      products.sort((a, b) => b.price.compareTo(a.price));
+    } else if (_sortBy == 'rating') {
+      products.sort((a, b) => b.rating.rate.compareTo(a.rating.rate));
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Discover Products'),
+        title: const Text('Explore Catalog'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline, color: AppColors.primary),
-            tooltip: 'Add Product',
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const AddEditProductScreen(),
-                ),
-              );
-            },
-          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => productProvider.fetchProducts(),
@@ -62,67 +52,102 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       body: Column(
         children: [
-          // Search input
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (val) => productProvider.setSearchQuery(val),
-              decoration: InputDecoration(
-                hintText: 'Search electronics, clothing, jewelry...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          productProvider.setSearchQuery('');
-                        },
-                      )
-                    : null,
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-              ),
+          // Search & Filter header
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.cardBorder),
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (val) => productProvider.setSearchQuery(val),
+                      decoration: const InputDecoration(
+                        hintText: 'Filter products...',
+                        prefixIcon: Icon(Icons.search, size: 20),
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+
+                // Sort Dropdown
+                Container(
+                  height: 40,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.cardBorder),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _sortBy,
+                      icon: const Icon(Icons.sort, size: 18),
+                      style: const TextStyle(fontSize: 12, color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+                      items: const [
+                        DropdownMenuItem(value: 'featured', child: Text('Featured')),
+                        DropdownMenuItem(value: 'price_low', child: Text('Price: Low to High')),
+                        DropdownMenuItem(value: 'price_high', child: Text('Price: High to Low')),
+                        DropdownMenuItem(value: 'rating', child: Text('Customer Rating')),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) setState(() => _sortBy = val);
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
-          // Categories filter chips
-          if (productProvider.categories.isNotEmpty)
-            SizedBox(
-              height: 48,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: productProvider.categories.length,
-                separatorBuilder: (context, index) => const SizedBox(width: 8),
-                itemBuilder: (context, index) {
-                  final cat = productProvider.categories[index];
-                  final isSelected = productProvider.selectedCategory == cat;
-                  return ChoiceChip(
-                    label: Text(
-                      cat[0].toUpperCase() + cat.substring(1),
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : AppColors.textPrimary,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      ),
+          // Categories Horizontal Chips
+          Container(
+            color: Colors.white,
+            height: 44,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+              itemCount: productProvider.categories.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final cat = productProvider.categories[index];
+                final isSelected = productProvider.selectedCategory == cat;
+                return ChoiceChip(
+                  label: Text(
+                    cat == 'all' ? 'All Items' : cat.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      color: isSelected ? Colors.black : AppColors.textSecondary,
                     ),
-                    selected: isSelected,
-                    selectedColor: AppColors.primary,
-                    backgroundColor: Colors.white,
-                    side: BorderSide(
-                      color: isSelected ? AppColors.primary : AppColors.border,
-                    ),
-                    onSelected: (selected) {
-                      if (selected) {
-                        productProvider.selectCategory(cat);
-                      }
-                    },
-                  );
-                },
-              ),
+                  ),
+                  selected: isSelected,
+                  selectedColor: AppColors.amazonOrange,
+                  backgroundColor: AppColors.background,
+                  side: BorderSide(
+                    color: isSelected ? AppColors.amazonOrange : AppColors.cardBorder,
+                  ),
+                  onSelected: (selected) {
+                    if (selected) productProvider.selectCategory(cat);
+                  },
+                );
+              },
             ),
-          const SizedBox(height: 8),
+          ),
+          const Divider(height: 1, thickness: 0.5, color: AppColors.cardBorder),
 
-          // Products Grid or Status
+          // Catalog Grid
           Expanded(
             child: RefreshIndicator(
               onRefresh: () => productProvider.fetchProducts(),
@@ -132,33 +157,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  if (productProvider.errorMessage != null && productProvider.rawProducts.isEmpty) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.error_outline, size: 48, color: AppColors.error),
-                            const SizedBox(height: 12),
-                            Text(
-                              productProvider.errorMessage!,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(color: AppColors.textSecondary),
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: () => productProvider.fetchProducts(),
-                              icon: const Icon(Icons.refresh),
-                              label: const Text('Try Again'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-
-                  final products = productProvider.products;
                   if (products.isEmpty) {
                     return const Center(
                       child: Text(
@@ -169,12 +167,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   }
 
                   return GridView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(10),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      crossAxisSpacing: 14,
-                      mainAxisSpacing: 14,
-                      childAspectRatio: 0.68,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.65,
                     ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
@@ -190,13 +188,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         },
                         onAddToCart: () {
                           cartProvider.addToCart(item);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Added "${item.title}" to cart!'),
-                              duration: const Duration(seconds: 1),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
                         },
                       );
                     },

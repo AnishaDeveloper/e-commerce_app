@@ -78,9 +78,14 @@ class ApiService {
       throw ApiException('Invalid credentials or unauthorized', 401);
     } else if (response.statusCode == 404) {
       throw ApiException('Resource not found', 404);
+    } else if (response.statusCode >= 500) {
+      throw ApiException(
+        'FakeStoreAPI server is temporarily unreachable (Error ${response.statusCode}). The origin server is offline or experiencing downtime.',
+        response.statusCode,
+      );
     } else {
       throw ApiException(
-        'Server returned error: ${response.statusCode} - ${response.body}',
+        'Server returned error (${response.statusCode})',
         response.statusCode,
       );
     }

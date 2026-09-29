@@ -26,6 +26,26 @@ class UserService {
     return user;
   }
 
+  /// Implements FakeStoreAPI POST /users endpoint
+  /// Schema: { "id": 0, "username": string, "email": string, "password": string }
+  Future<Map<String, dynamic>> createNewUser({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    final payload = {
+      'id': 0,
+      'username': username,
+      'email': email,
+      'password': password,
+    };
+    final response = await _apiService.post(ApiConstants.users, payload);
+    if (response is Map<String, dynamic>) {
+      return response;
+    }
+    return payload;
+  }
+
   Future<User> updateUser(User user) async {
     await _apiService.put(ApiConstants.user(user.id), user.toJson());
     return user;
