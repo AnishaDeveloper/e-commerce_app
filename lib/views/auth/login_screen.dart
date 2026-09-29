@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Signed in successfully!'),
-          backgroundColor: Color(0xFFBA3216),
+          backgroundColor: AppColors.headerNavy,
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),
         ),
@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    const brandTerracotta = Color(0xFFBA3216);
+    const appColor = AppColors.headerNavy;
     const inputFillColor = Color(0xFFF7F8F9);
 
     return Scaffold(
@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: brandTerracotta, width: 1.5),
+                        borderSide: const BorderSide(color: appColor, width: 1.5),
                       ),
                     ),
                     validator: (val) =>
@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: brandTerracotta, width: 1.5),
+                        borderSide: const BorderSide(color: appColor, width: 1.5),
                       ),
                     ),
                     validator: (val) =>
@@ -224,19 +224,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Terracotta Sign In Button
+                  // App Color Sign In Button
                   Container(
                     height: 50,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFFBA3216), Color(0xFFD64423)],
+                        colors: [Color(0xFF232F3E), Color(0xFF131921)],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFBA3216).withValues(alpha: 0.3),
+                          color: const Color(0xFF131921).withValues(alpha: 0.28),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),

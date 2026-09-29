@@ -53,9 +53,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.headerNavy,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.menu, color: Colors.white, size: 26),
+          onPressed: () {},
+        ),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RichText(
+              text: const TextSpan(
+                text: 'NOVA',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.5,
+                  fontFamily: 'sans-serif',
+                ),
+                children: [],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart_outlined, color: Colors.white, size: 26),
+            onPressed: () {
+              if (widget.onNavigateTab != null) {
+                widget.onNavigateTab!(2); // Navigate to Cart tab
+              }
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
-          // Amazon & Flipkart Search Header Bar
+          // Amazon & Flipkart Search Header Bar (below App Bar)
           AmazonHeaderBar(
             authProvider: authProvider,
             searchController: _searchController,

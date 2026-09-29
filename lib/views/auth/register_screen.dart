@@ -53,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    final success = await authProvider.registerUser(
+    await authProvider.registerUser(
       username: username,
       email: email,
       password: password,
@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Account registered! Details filled in login screen.'),
-          backgroundColor: Color(0xFFBA3216),
+          backgroundColor: AppColors.headerNavy,
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),
         ),
@@ -88,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    const brandTerracotta = Color(0xFFBA3216);
+    const appColor = AppColors.headerNavy;
     const inputFillColor = Color(0xFFF7F8F9);
 
     return Scaffold(
@@ -145,7 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: brandTerracotta, width: 1.5),
+                        borderSide: const BorderSide(color: appColor, width: 1.5),
                       ),
                     ),
                     validator: (val) =>
@@ -182,7 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: brandTerracotta, width: 1.5),
+                        borderSide: const BorderSide(color: appColor, width: 1.5),
                       ),
                     ),
                     validator: (val) =>
@@ -231,7 +231,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: brandTerracotta, width: 1.5),
+                        borderSide: const BorderSide(color: appColor, width: 1.5),
                       ),
                     ),
                     validator: (val) =>
@@ -239,19 +239,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 28),
 
-                  // Register Button
+                  // App Color Register Button
                   Container(
                     height: 50,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFFBA3216), Color(0xFFD64423)],
+                        colors: [Color(0xFF232F3E), Color(0xFF131921)],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFBA3216).withValues(alpha: 0.3),
+                          color: const Color(0xFF131921).withValues(alpha: 0.28),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),

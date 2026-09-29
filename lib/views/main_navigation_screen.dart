@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
 import '../core/theme/app_theme.dart';
 import '../providers/cart_provider.dart';
@@ -41,47 +42,74 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: Colors.grey.shade300, width: 0.5)),
-        ),
-        child: NavigationBar(
-          selectedIndex: _currentIndex,
-          onDestinationSelected: _onTabSelect,
-          backgroundColor: Colors.white,
-          indicatorColor: AppColors.amazonOrange.withValues(alpha: 0.2),
-          elevation: 0,
-          height: 60,
-          destinations: [
-            const NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home, color: AppColors.headerNavy),
-              label: 'Home',
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.grid_view_outlined),
-              selectedIcon: Icon(Icons.grid_view_rounded, color: AppColors.headerNavy),
-              label: 'Explore',
-            ),
-            NavigationDestination(
-              icon: Badge(
-                isLabelVisible: cartProvider.itemCount > 0,
-                backgroundColor: AppColors.dealRed,
-                label: Text('${cartProvider.itemCount}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                child: const Icon(Icons.shopping_cart_outlined),
-              ),
-              selectedIcon: Badge(
-                isLabelVisible: cartProvider.itemCount > 0,
-                backgroundColor: AppColors.dealRed,
-                label: Text('${cartProvider.itemCount}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                child: const Icon(Icons.shopping_cart, color: AppColors.headerNavy),
-              ),
-              label: 'Cart',
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person, color: AppColors.headerNavy),
-              label: 'You',
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Colors.grey.shade200, width: 0.8)),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10,
+              color: Colors.black.withValues(alpha: 0.05),
+              offset: const Offset(0, -2),
             ),
           ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8),
+            child: GNav(
+              rippleColor: Colors.grey.shade200,
+              hoverColor: Colors.grey.shade100,
+              haptic: true,
+              tabBorderRadius: 24,
+              tabActiveBorder: Border.all(color: AppColors.amazonOrange.withValues(alpha: 0.3), width: 1),
+              curve: Curves.easeOutExpo,
+              duration: const Duration(milliseconds: 300),
+              gap: 8,
+              color: Colors.grey.shade600,
+              activeColor: AppColors.headerNavy,
+              iconSize: 22,
+              textStyle: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: AppColors.headerNavy,
+              ),
+              tabBackgroundColor: AppColors.amazonOrange.withValues(alpha: 0.16),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              selectedIndex: _currentIndex,
+              onTabChange: _onTabSelect,
+              tabs: [
+                const GButton(
+                  icon: Icons.home_outlined,
+                  text: 'Home',
+                ),
+                const GButton(
+                  icon: Icons.grid_view_outlined,
+                  text: 'Explore',
+                ),
+                GButton(
+                  icon: Icons.shopping_cart_outlined,
+                  text: 'Cart',
+                  leading: cartProvider.itemCount > 0
+                      ? Badge(
+                          backgroundColor: AppColors.dealRed,
+                          label: Text(
+                            '${cartProvider.itemCount}',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                          ),
+                          child: Icon(
+                            _currentIndex == 2 ? Icons.shopping_cart : Icons.shopping_cart_outlined,
+                            size: 22,
+                            color: _currentIndex == 2 ? AppColors.headerNavy : Colors.grey.shade600,
+                          ),
+                        )
+                      : null,
+                ),
+                const GButton(
+                  icon: Icons.person_outline,
+                  text: 'You',
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

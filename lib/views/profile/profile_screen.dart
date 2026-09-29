@@ -188,10 +188,17 @@ class ProfileScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
               onPressed: () async {
+                final currentUsername = authProvider.currentUser?.username ?? authProvider.registeredUsername;
+                final currentPassword = authProvider.registeredPassword;
                 await authProvider.logout();
                 if (context.mounted) {
                   Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => LoginScreen(
+                        initialUsername: currentUsername,
+                        initialPassword: currentPassword,
+                      ),
+                    ),
                     (route) => false,
                   );
                 }

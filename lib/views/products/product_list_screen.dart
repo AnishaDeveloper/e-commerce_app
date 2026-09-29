@@ -4,7 +4,6 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/cart_provider.dart';
 import 'product_detail_screen.dart';
-import 'add_edit_product_screen.dart';
 import 'widgets/product_card.dart';
 
 class ProductListScreen extends StatefulWidget {

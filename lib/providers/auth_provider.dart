@@ -12,12 +12,16 @@ class AuthProvider extends ChangeNotifier {
   User? _currentUser;
   bool _isLoading = false;
   String? _errorMessage;
+  String? _registeredUsername;
+  String? _registeredPassword;
 
   String? get token => _token;
   User? get currentUser => _currentUser;
   bool get isAuthenticated => _token != null;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  String? get registeredUsername => _registeredUsername;
+  String? get registeredPassword => _registeredPassword;
 
   AuthProvider() {
     _loadFromPrefs();
@@ -26,6 +30,8 @@ class AuthProvider extends ChangeNotifier {
   Future<void> _loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     _token = prefs.getString('auth_token');
+    _registeredUsername = prefs.getString('auth_registered_username') ?? prefs.getString('auth_username');
+    _registeredPassword = prefs.getString('auth_registered_password');
     final userId = prefs.getInt('auth_user_id');
     if (_token != null && userId != null) {
       try {
@@ -174,7 +180,11 @@ class AuthProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', token);
       await prefs.setString('auth_username', username);
+      await prefs.setString('auth_registered_username', username);
+      await prefs.setString('auth_registered_password', password);
       await prefs.setInt('auth_user_id', newId);
+      _registeredUsername = username;
+      _registeredPassword = password;
 
       _isLoading = false;
       notifyListeners();
@@ -205,7 +215,11 @@ class AuthProvider extends ChangeNotifier {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', fallbackToken);
         await prefs.setString('auth_username', username);
+        await prefs.setString('auth_registered_username', username);
+        await prefs.setString('auth_registered_password', password);
         await prefs.setInt('auth_user_id', 11);
+        _registeredUsername = username;
+        _registeredPassword = password;
 
         _isLoading = false;
         _errorMessage = null;
