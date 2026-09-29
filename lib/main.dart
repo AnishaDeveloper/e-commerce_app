@@ -6,8 +6,7 @@ import 'providers/auth_provider.dart';
 import 'providers/product_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/user_provider.dart';
-import 'views/auth/login_screen.dart';
-import 'views/main_navigation_screen.dart';
+import 'views/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,17 +32,11 @@ class FakeStoreApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
-      child: Consumer<AuthProvider>(
-        builder: (context, authProvider, _) {
-          return MaterialApp(
-            title: 'NOVA Store',
-            theme: AppTheme.lightTheme,
-            debugShowCheckedModeBanner: false,
-            home: authProvider.isAuthenticated
-                ? const MainNavigationScreen()
-                : const LoginScreen(),
-          );
-        },
+      child: MaterialApp(
+        title: 'NOVA Store',
+        theme: AppTheme.lightTheme,
+        debugShowCheckedModeBanner: false,
+        home: const SplashScreen(),
       ),
     );
   }

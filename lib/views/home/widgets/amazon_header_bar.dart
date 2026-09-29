@@ -54,7 +54,7 @@ class AmazonHeaderBar extends StatelessWidget {
                         onSubmitted: (_) => onSearchSubmitted(),
                         style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
                         decoration: InputDecoration(
-                          hintText: 'Search Amazon / Flipkart...',
+                          hintText: 'Search ',
                           hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
                           prefixIcon: const Icon(Icons.search, color: AppColors.headerNavy),
                           suffixIcon: Row(

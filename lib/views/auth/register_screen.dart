@@ -3,80 +3,83 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../main_navigation_screen.dart';
-import 'register_screen.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   final String? initialUsername;
+  final String? initialEmail;
   final String? initialPassword;
 
-  const LoginScreen({
+  const RegisterScreen({
     super.key,
     this.initialUsername,
+    this.initialEmail,
     this.initialPassword,
   });
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _usernameController;
+  late TextEditingController _emailController;
   late TextEditingController _passwordController;
   bool _obscurePassword = true;
 
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController(
-      text: widget.initialUsername?.isNotEmpty == true
-          ? widget.initialUsername
-          : 'mor_2314',
-    );
-    _passwordController = TextEditingController(
-      text: widget.initialPassword?.isNotEmpty == true
-          ? widget.initialPassword
-          : '83r5^_',
-    );
+    _usernameController = TextEditingController(text: widget.initialUsername ?? '');
+    _emailController = TextEditingController(text: widget.initialEmail ?? '');
+    _passwordController = TextEditingController(text: widget.initialPassword ?? '');
   }
 
   @override
   void dispose() {
     _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _submit() async {
+  void _submitRegister() async {
     if (!_formKey.currentState!.validate()) return;
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final success = await authProvider.login(
-      _usernameController.text.trim(),
-      _passwordController.text.trim(),
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    final success = await authProvider.registerUser(
+      username: username,
+      email: email,
+      password: password,
     );
 
-    if (success && mounted) {
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Signed in successfully!'),
+          content: Text('Account registered! Details filled in login screen.'),
           backgroundColor: Color(0xFFBA3216),
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),
         ),
       );
+
+      // Navigate to Login screen and pass the registered details!
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
-      );
-    } else if (mounted && authProvider.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authProvider.errorMessage!),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          duration: const Duration(seconds: 4),
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => LoginScreen(
+            initialUsername: username,
+            initialPassword: password,
+          ),
+          transitionsBuilder: (_, animation, __, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 300),
         ),
       );
     }
@@ -99,11 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
 
-                  // Title: "Sign in your account" matching reference image
+                  // Title matching reference: "Create your account"
                   const Text(
-                    'Sign in your account',
+                    'Create your account',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22,
@@ -112,11 +115,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       letterSpacing: 0.2,
                     ),
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 32),
 
-                  // Email ID / Username
+                  // Username
                   const Text(
-                    'Email ID',
+                    'Username',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -127,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     controller: _usernameController,
                     decoration: InputDecoration(
-                      hintText: 'Email ID or Username',
+                      hintText: 'Enter username',
                       hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade400),
                       filled: true,
                       fillColor: inputFillColor,
@@ -146,7 +149,44 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     validator: (val) =>
-                        val == null || val.trim().isEmpty ? 'Please enter your email or username' : null,
+                        val == null || val.trim().isEmpty ? 'Please enter username' : null,
+                  ),
+                  const SizedBox(height: 18),
+
+                  // Email ID
+                  const Text(
+                    'Email ID',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF333333),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Email ID',
+                      hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade400),
+                      filled: true,
+                      fillColor: inputFillColor,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Colors.grey.shade200, width: 0.8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: brandTerracotta, width: 1.5),
+                      ),
+                    ),
+                    validator: (val) =>
+                        val == null || !val.contains('@') ? 'Please enter a valid email' : null,
                   ),
                   const SizedBox(height: 18),
 
@@ -164,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      hintText: 'Password',
+                      hintText: 'Enter password',
                       hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade400),
                       filled: true,
                       fillColor: inputFillColor,
@@ -195,36 +235,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     validator: (val) =>
-                        val == null || val.trim().isEmpty ? 'Please enter your password' : null,
+                        val == null || val.trim().isEmpty ? 'Please enter password' : null,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 28),
 
-                  // Forgot Password link
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Password reset link has been simulated.'),
-                            duration: Duration(seconds: 2),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Forgot password?',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Terracotta Sign In Button
+                  // Register Button
                   Container(
                     height: 50,
                     decoration: BoxDecoration(
@@ -250,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: authProvider.isLoading ? null : _submit,
+                      onPressed: authProvider.isLoading ? null : _submitRegister,
                       child: authProvider.isLoading
                           ? const SizedBox(
                               width: 22,
@@ -261,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             )
                           : const Text(
-                              'Sign in',
+                              'Register',
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -407,12 +422,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Bottom toggle: "Don't have an account ? Sign Up"
+                  // Bottom toggle: "Already have an account ? Sign In"
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Don't have an account ? ",
+                        'Already have an account ? ',
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.grey.shade700,
@@ -422,7 +437,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           Navigator.of(context).pushReplacement(
                             PageRouteBuilder(
-                              pageBuilder: (_, __, ___) => RegisterScreen(
+                              pageBuilder: (_, __, ___) => LoginScreen(
                                 initialUsername: _usernameController.text.trim(),
                                 initialPassword: _passwordController.text.trim(),
                               ),
@@ -434,7 +449,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                         child: const Text(
-                          'Sign Up',
+                          'Sign In',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
