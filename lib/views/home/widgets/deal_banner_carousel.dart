@@ -30,7 +30,7 @@ class _DealBannerCarouselState extends State<DealBannerCarousel> {
     },
     {
       'title': 'MEGA FASHION WEEK',
-      'subtitle': 'Men & Women Premium Collections under \$99',
+      'subtitle': 'Men & Women Premium Collections under ₹799',
       'tag': 'TRENDING NOW',
       'colors': [Color(0xFF6200EA), Color(0xFF311B92)],
       'icon': Icons.checkroom,

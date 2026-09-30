@@ -199,7 +199,7 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '\$${product.price.toStringAsFixed(2)}',
+                        '₹${product.price.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -216,7 +216,7 @@ class ProductDetailScreen extends StatelessWidget {
                         style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
                       ),
                       Text(
-                        '\$${strikePrice.toStringAsFixed(2)}',
+                        '₹${strikePrice.toStringAsFixed(2)}',
                         style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,

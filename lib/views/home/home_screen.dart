@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       // 6. Amazon-style Quad Showcase (Fashion)
                       if (fashionProducts.isNotEmpty)
                         AmazonQuadShowcase(
-                          title: 'Latest Trends in Fashion | Under \$50',
+                          title: 'Latest Trends in Fashion | Under ₹499',
                           products: fashionProducts,
                           onSeeMore: () {
                             productProvider.selectCategory("men's clothing");

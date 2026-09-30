@@ -131,8 +131,8 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
                 controller: _priceController,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: const InputDecoration(
-                  labelText: 'Price (\$)',
-                  prefixText: '\$ ',
+                  labelText: 'Price (₹)',
+                  prefixText: '₹ ',
                 ),
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) return 'Please enter price';

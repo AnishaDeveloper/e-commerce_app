@@ -153,7 +153,7 @@ class DealHorizontalStrip extends StatelessWidget {
                           textBaseline: TextBaseline.alphabetic,
                           children: [
                             Text(
-                              '\$${product.price.toStringAsFixed(2)}',
+                              '₹${product.price.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -162,7 +162,7 @@ class DealHorizontalStrip extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              '\$${strikePrice.toStringAsFixed(0)}',
+                              '₹${strikePrice.toStringAsFixed(0)}',
                               style: const TextStyle(
                                 fontSize: 10,
                                 decoration: TextDecoration.lineThrough,

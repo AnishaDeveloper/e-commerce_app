@@ -84,7 +84,7 @@ class AmazonQuadShowcase extends StatelessWidget {
                         style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        'From \$${product.price.toStringAsFixed(2)}',
+                        'From ₹${product.price.toStringAsFixed(2)}',
                         style: const TextStyle(fontSize: 11, color: AppColors.discountGreen, fontWeight: FontWeight.bold),
                       ),
                     ],

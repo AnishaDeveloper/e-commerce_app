@@ -26,7 +26,7 @@ class CartScreen extends StatelessWidget {
             const Text('Thank you! Your order has been placed successfully via FakeStore API.'),
             const SizedBox(height: 12),
             Text(
-              'Order Total: \$${cartProvider.totalAmount.toStringAsFixed(2)}',
+              'Order Total: ₹${cartProvider.totalAmount.toStringAsFixed(2)}',
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 4),
@@ -121,7 +121,7 @@ class CartScreen extends StatelessWidget {
                       style: TextStyle(fontSize: 18, color: AppColors.textPrimary),
                     ),
                     Text(
-                      '\$${cartProvider.totalAmount.toStringAsFixed(2)}',
+                      '₹${cartProvider.totalAmount.toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -209,7 +209,7 @@ class CartScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              '\$${(product?.price ?? 0.0).toStringAsFixed(2)}',
+                              '₹${(product?.price ?? 0.0).toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
