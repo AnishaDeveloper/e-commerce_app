@@ -17,6 +17,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -38,15 +39,15 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    Timer(const Duration(milliseconds: 2200), () {
+    _timer = Timer(const Duration(milliseconds: 2200), () {
       if (!mounted) return;
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => authProvider.isAuthenticated
+          pageBuilder: (context, anim, secAnim) => authProvider.isAuthenticated
               ? const MainNavigationScreen()
               : const RegisterScreen(),
-          transitionsBuilder: (_, animation, __, child) {
+          transitionsBuilder: (context, animation, secAnim, child) {
             return FadeTransition(opacity: animation, child: child);
           },
           transitionDuration: const Duration(milliseconds: 350),
@@ -57,6 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void dispose() {
+    _timer?.cancel();
     _controller.dispose();
     super.dispose();
   }

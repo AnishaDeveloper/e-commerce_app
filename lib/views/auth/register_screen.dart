@@ -72,11 +72,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // Navigate to Login screen and pass the registered details!
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => LoginScreen(
+          pageBuilder: (context, anim, secAnim) => LoginScreen(
             initialUsername: username,
             initialPassword: password,
           ),
-          transitionsBuilder: (_, animation, __, child) {
+          transitionsBuilder: (context, animation, secAnim, child) {
             return FadeTransition(opacity: animation, child: child);
           },
           transitionDuration: const Duration(milliseconds: 300),
@@ -437,11 +437,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onTap: () {
                           Navigator.of(context).pushReplacement(
                             PageRouteBuilder(
-                              pageBuilder: (_, __, ___) => LoginScreen(
+                              pageBuilder: (context, anim, secAnim) => LoginScreen(
                                 initialUsername: _usernameController.text.trim(),
                                 initialPassword: _passwordController.text.trim(),
                               ),
-                              transitionsBuilder: (_, animation, __, child) {
+                              transitionsBuilder: (context, animation, secAnim, child) {
                                 return FadeTransition(opacity: animation, child: child);
                               },
                               transitionDuration: const Duration(milliseconds: 300),

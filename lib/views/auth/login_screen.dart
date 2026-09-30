@@ -422,11 +422,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           Navigator.of(context).pushReplacement(
                             PageRouteBuilder(
-                              pageBuilder: (_, __, ___) => RegisterScreen(
+                              pageBuilder: (context, anim, secAnim) => RegisterScreen(
                                 initialUsername: _usernameController.text.trim(),
                                 initialPassword: _passwordController.text.trim(),
                               ),
-                              transitionsBuilder: (_, animation, __, child) {
+                              transitionsBuilder: (context, animation, secAnim, child) {
                                 return FadeTransition(opacity: animation, child: child);
                               },
                               transitionDuration: const Duration(milliseconds: 300),
